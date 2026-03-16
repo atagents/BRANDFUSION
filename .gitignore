@@ -1,0 +1,36 @@
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Node
+node_modules/
+
+# IDEs
+.vscode/
+.idea/
+
+# Large media files (Uncomment if you want to ignore video files to keep repo small)
+# video_assets/*.mp4
+# video_assets/*.avi
+# video_assets/*.mov

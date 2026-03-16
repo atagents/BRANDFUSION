@@ -1,0 +1,211 @@
+{
+  "name": "Stealth AI Ad Agency Pipeline (Tier 4)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Schedule Trigger (Daily)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.example.com/viral-tiktok-trends",
+        "options": {}
+      },
+      "id": "2",
+      "name": "Fetch Viral Trends API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "model": "gemini-2.5-flash",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "Load prompt from E:/SHVMSTORAGE/BRANDFUSION/agents/content_strategy_agent.md"
+            },
+            {
+              "content": "=# {{ $json.viral_video_transcript }}"
+            }
+          ]
+        }
+      },
+      "id": "3",
+      "name": "Agent 1: Content Strategy (LLM)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "model": "gemini-2.5-flash",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "Load prompt from E:/SHVMSTORAGE/BRANDFUSION/agents/creative_director_agent.md"
+            },
+            {
+              "content": "=# {{ $json.rewritten_script }}"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Agent 2: Creative Director (LLM)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8188/prompt",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "=# {{ $json.comfyui_shotverse_workflow }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5",
+      "name": "Trigger ComfyUI (ShotVerse/WildActor)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "model": "gemini-2.5-flash",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "Load prompt from E:/SHVMSTORAGE/BRANDFUSION/agents/brand_strategist_agent.md"
+            },
+            {
+              "content": "=# {{ $json.shot_list }} \n Target Brand: 'Gatorade'"
+            }
+          ]
+        }
+      },
+      "id": "6",
+      "name": "Agent 3: Brand Strategist (LLM)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8188/prompt",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "=# {{ $json.comfyui_brandfusion_workflow }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7",
+      "name": "Trigger ComfyUI (BrandFusion)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1450, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Daily)": {
+      "main": [
+        [
+          {
+            "node": "Fetch Viral Trends API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Viral Trends API": {
+      "main": [
+        [
+          {
+            "node": "Agent 1: Content Strategy (LLM)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 1: Content Strategy (LLM)": {
+      "main": [
+        [
+          {
+            "node": "Agent 2: Creative Director (LLM)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 2: Creative Director (LLM)": {
+      "main": [
+        [
+          {
+            "node": "Trigger ComfyUI (ShotVerse/WildActor)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger ComfyUI (ShotVerse/WildActor)": {
+      "main": [
+        [
+          {
+            "node": "Agent 3: Brand Strategist (LLM)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 3: Brand Strategist (LLM)": {
+      "main": [
+        [
+          {
+            "node": "Trigger ComfyUI (BrandFusion)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1"
+}
