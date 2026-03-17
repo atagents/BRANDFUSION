@@ -1,0 +1,191 @@
+{
+  "name": "Hybrid Workflow C: Tier 5 Automated Monetization & Outreach",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "trigger-outreach",
+      "name": "Daily Outreach Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "path": "e:/SHVMSTORAGE/BRANDFUSION/video_assets/rendered_videos/"
+      },
+      "id": "find-new-videos",
+      "name": "Find New Generated Videos",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.hunter.io/v2/domain-search",
+        "options": {},
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "domain",
+              "value": "={{ $json.metadata.target_brand_domain }}"
+            },
+            {
+              "name": "api_key",
+              "value": "YOUR_HUNTER_IO_API_KEY_HERE"
+            }
+          ]
+        }
+      },
+      "id": "hunter-io-lead-gen",
+      "name": "Find Brand Decision Makers (Hunter.io)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [500, 300],
+      "notesInFlow": true,
+      "notes": "Finds CMO or Marketing Director emails"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3-haiku",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [650, 450],
+      "id": "openrouter-api",
+      "name": "OpenRouter Chat API",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# {{ $json.viral_video_metadata }} \n Target Company: {{ $node['Find Brand Decision Makers (Hunter.io)'].json.data.company }} \n Target Person: {{ $node['Find Brand Decision Makers (Hunter.io)'].json.data.emails[0].first_name }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "# Role: Outreach Agent (Stealth Agency)\n\n**Objective:** You have just created a highly viral-format video that features a specific brand's product. Write a concise, 4-sentence cold email to their marketing director offering them the rights to use this video as a paid ad.\n\n**Rules:**\n1. Do not sound like an AI.\n2. Keep it under 50 words.\n3. Mention the specific video style and why it converts.\n4. Close with a soft call to action asking if they want to see the video.\n\n**Output:** Just the email body and the subject line."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [700, 300],
+      "id": "outreach-agent",
+      "name": "Outreach Agent (Email Writer)"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  brand: $node['Find Brand Decision Makers (Hunter.io)'].json.data.company,\n  contact_email: $node['Find Brand Decision Makers (Hunter.io)'].json.data.emails[0].value,\n  email_draft: $input.all()[0].json.text,\n  video_file: $node['Find New Generated Videos'].json.fileName\n};"
+      },
+      "id": "format-slack-approval",
+      "name": "Format For Approval",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "path": "e:/SHVMSTORAGE/BRANDFUSION/client_outreach/pending_approvals.csv",
+        "dataPropertyName": "data",
+        "options": {}
+      },
+      "id": "save-to-csv",
+      "name": "Save to CSV (Human Review)",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1100, 300],
+      "notesInFlow": true,
+      "notes": "NEVER send cold email automatically without a human checking the CSV first."
+    }
+  ],
+  "connections": {
+    "Daily Outreach Trigger": {
+      "main": [
+        [
+          {
+            "node": "Find New Generated Videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find New Generated Videos": {
+      "main": [
+        [
+          {
+            "node": "Find Brand Decision Makers (Hunter.io)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Brand Decision Makers (Hunter.io)": {
+      "main": [
+        [
+          {
+            "node": "Outreach Agent (Email Writer)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat API": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Outreach Agent (Email Writer)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outreach Agent (Email Writer)": {
+      "main": [
+        [
+          {
+            "node": "Format For Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format For Approval": {
+      "main": [
+        [
+          {
+            "node": "Save to CSV (Human Review)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "hybrid-workflow-c-1"
+}
