@@ -1,0 +1,259 @@
+{
+  "name": "Reference-Safe Trend to Hybrid Render",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger-hybrid",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [220, 320]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "source_url", "value": "https://www.tiktok.com/@example/video/1234567890" },
+            { "name": "platform", "value": "tiktok" },
+            { "name": "title", "value": "Morning routine that feels secretly luxurious" },
+            { "name": "creator", "value": "@example_creator" },
+            { "name": "transcript", "value": "I stopped starting my mornings in chaos. Now I do three small things that make the whole day feel expensive, calm, and in control." },
+            { "name": "target_brand", "value": "Minimal skincare brand" },
+            { "name": "target_product", "value": "Hydrating serum bottle" },
+            { "name": "output_goal", "value": "Create an original premium lifestyle commercial inspired by the viral mechanics, not the literal source content." },
+            { "name": "render_engine", "value": "veo3_partner" },
+            { "name": "veo_model", "value": "veo-3.1-fast-generate" }
+          ],
+          "number": [
+            { "name": "views", "value": 1200000 },
+            { "name": "likes", "value": 98000 }
+          ],
+          "boolean": [
+            { "name": "generate_audio", "value": false }
+          ]
+        },
+        "options": {}
+      },
+      "id": "reference-input-hybrid",
+      "name": "Reference Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 320]
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [760, 640],
+      "id": "openrouter-model-hybrid",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ JSON.stringify($json, null, 2) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Reference Analyzer for a reference-safe viral remake pipeline. Analyze the provided viral content as reference material only. Extract viral mechanics, pacing, shot rhythm, emotional structure, and visual patterns. Do not preserve literal wording, identifiable creator traits, exact framing, or any direct copyable expression. Return valid JSON only with this schema: { \"reference_summary\": \"...\", \"hook_type\": \"...\", \"pacing\": { \"avg_shot_seconds\": 0, \"estimated_cut_count\": 0, \"energy_curve\": [\"high\", \"medium\"] }, \"visual_mechanics\": { \"environment_type\": \"...\", \"camera_style\": \"...\", \"scene_pattern\": [\"...\"] }, \"emotional_trigger\": \"...\", \"copyright_risk_notes\": [\"...\"], \"safe_takeaways\": [\"...\"] }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [760, 320],
+      "id": "reference-analyzer-hybrid",
+      "name": "Reference Analyzer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reference input:\n{{ $('Reference Input').item.json.source_url }}\n{{ $('Reference Input').item.json.platform }}\n{{ $('Reference Input').item.json.title }}\n{{ $('Reference Input').item.json.transcript }}\n\nExtracted mechanics JSON:\n{{ $json.text }}\n\nBrand: {{ $('Reference Input').item.json.target_brand }}\nProduct: {{ $('Reference Input').item.json.target_product }}\nGoal: {{ $('Reference Input').item.json.output_goal }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Safe Transformer. Convert the extracted viral mechanics into a new original commercial direction for the target brand and product. Keep the mechanism, not the expression. Change setting, subject, copy, visual details, and product context enough to avoid direct resemblance. Favor scenes that render well in current AI video models: one clear subject, simple action, believable environment, balanced exposure, soft contrast, and smooth camera motion. Return valid JSON only with this schema: { \"new_angle\": \"...\", \"new_setting\": \"...\", \"new_subject\": \"...\", \"product_role\": \"...\", \"style_constraints\": [\"...\"], \"avoid_list\": [\"...\"], \"originality_notes\": [\"...\"], \"commercial_direction\": \"...\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [1080, 320],
+      "id": "safe-transformer-hybrid",
+      "name": "Safe Transformer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reference input JSON:\n{{ JSON.stringify($('Reference Input').item.json, null, 2) }}\n\nMechanics JSON:\n{{ $('Reference Analyzer').item.json.text }}\n\nTransformed brief JSON:\n{{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Render Brief Builder for AI product video generation. Produce a compact, high-quality render brief for n8n and ComfyUI. The output must be original, product-friendly, and model-friendly. Favor short clips, believable lifestyle setups, soft daylight or clean studio light, realistic textures, and product readability. Return valid JSON only with this schema: { \"master_visual_direction\": \"...\", \"hero_prompt\": \"...\", \"negative_prompt\": \"...\", \"duration_seconds\": 0, \"aspect_ratio\": \"832x480\", \"shot_plan\": [ { \"shot_number\": 1, \"duration_seconds\": 0, \"visual_prompt\": \"...\", \"camera_trajectory\": \"...\", \"quality_notes\": \"...\" } ], \"brand_integration_notes\": \"...\", \"caption_angle\": \"...\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [1400, 320],
+      "id": "render-brief-builder-hybrid",
+      "name": "Render Brief Builder"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.text || '';\n\nfunction extractJson(text) {\n  const trimmed = String(text || '').trim();\n  if (!trimmed) return null;\n  try { return JSON.parse(trimmed); } catch {}\n  const codeBlockMatch = trimmed.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (codeBlockMatch) {\n    try { return JSON.parse(codeBlockMatch[1].trim()); } catch {}\n  }\n  const start = trimmed.indexOf('{');\n  const end = trimmed.lastIndexOf('}');\n  if (start !== -1 && end !== -1 && end > start) {\n    try { return JSON.parse(trimmed.slice(start, end + 1)); } catch {}\n  }\n  return null;\n}\n\nconst parsed = extractJson(raw) || {};\nconst fallback = {\n  master_visual_direction: 'Clean premium lifestyle product video, soft daylight, realistic textures, calm modern environment, balanced exposure, smooth camera movement.',\n  hero_prompt: 'cinematic product commercial, close-up lifestyle shot of a minimalist skincare serum bottle on a clean beige marble bathroom counter, soft natural daylight, realistic reflections, premium packaging, photorealistic, smooth handheld motion, shallow depth of field, balanced contrast, high detail',\n  negative_prompt: 'blurry, low quality, deformed objects, warped hands, extra fingers, duplicate items, floating objects, messy background, text artifacts, logo distortion, oversaturated, harsh contrast, clipped highlights, crushed shadows, flicker, jitter, unrealistic geometry',\n  duration_seconds: 4,\n  aspect_ratio: '832x480',\n  shot_plan: [],\n  brand_integration_notes: 'Keep the product readable and central in a believable lifestyle environment.',\n  caption_angle: 'A small routine detail that makes the whole morning feel premium.'\n};\nconst merged = { ...fallback, ...parsed };\nmerged.duration_seconds = Number.isFinite(Number(merged.duration_seconds)) ? Math.max(2, Math.min(8, Number(merged.duration_seconds))) : 4;\nmerged.shot_plan = Array.isArray(merged.shot_plan) ? merged.shot_plan : [];\nmerged.parse_ok = !!extractJson(raw);\nmerged.raw_llm_text = raw;\nmerged.render_engine = $('Reference Input').item.json.render_engine || 'wan_local';\nmerged.veo_model = $('Reference Input').item.json.veo_model || 'veo-3.1-fast-generate';\nmerged.generate_audio = !!$('Reference Input').item.json.generate_audio;\nreturn [{ json: merged }];"
+      },
+      "id": "normalize-render-brief-hybrid",
+      "name": "Normalize Render Brief",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1620, 320]
+    },
+    {
+      "parameters": {
+        "jsCode": "const brief = $json;\nconst ratio = String(brief.aspect_ratio || '832x480');\nlet veoAspect = '16:9';\nif (ratio.includes('9:16')) veoAspect = '9:16';\nelse if (ratio.includes('480x832')) veoAspect = '9:16';\n\nconst engine = String(brief.render_engine || 'wan_local');\nlet prompt;\nlet render_backend;\n\nif (engine === 'veo3_partner') {\n  render_backend = 'comfy_partner_veo3';\n  prompt = {\n    prompt: {\n      '1': {\n        inputs: {\n          prompt: brief.hero_prompt,\n          aspect_ratio: veoAspect,\n          negative_prompt: brief.negative_prompt || '',\n          duration_seconds: Math.max(5, Math.min(8, Math.round(Number(brief.duration_seconds) || 5))),\n          enhance_prompt: true,\n          person_generation: 'ALLOW',\n          seed: 0,\n          model: brief.veo_model || 'veo-3.1-fast-generate',\n          generate_audio: !!brief.generate_audio\n        },\n        class_type: 'Veo3VideoGenerationNode',\n        _meta: { title: 'Veo 3 Video Generation' }\n      },\n      '2': {\n        inputs: {\n          video: ['1', 0],\n          filename_prefix: 'video/BrandFusion_Veo3',\n          format: 'auto',\n          pix_fmt: 'auto'\n        },\n        class_type: 'SaveVideo',\n        _meta: { title: 'Save Video' }\n      }\n    }\n  };\n} else {\n  render_backend = 'comfy_local_wan';\n  prompt = {\n    prompt: {\n      '3': {\n        inputs: {\n          model: ['48', 0],\n          positive: ['6', 0],\n          negative: ['7', 0],\n          latent_image: ['55', 0],\n          seed: 285741127119524,\n          steps: 36,\n          cfg: 4,\n          sampler_name: 'uni_pc',\n          scheduler: 'simple',\n          denoise: 1\n        },\n        class_type: 'KSampler',\n        _meta: { title: 'KSampler' }\n      },\n      '6': {\n        inputs: { clip: ['38', 0], text: brief.hero_prompt },\n        class_type: 'CLIPTextEncode',\n        _meta: { title: 'CLIP Text Encode (Positive Prompt)' }\n      },\n      '7': {\n        inputs: { clip: ['38', 0], text: brief.negative_prompt },\n        class_type: 'CLIPTextEncode',\n        _meta: { title: 'CLIP Text Encode (Negative Prompt)' }\n      },\n      '8': {\n        inputs: { samples: ['3', 0], vae: ['39', 0] },\n        class_type: 'VAEDecode',\n        _meta: { title: 'VAEDecode' }\n      },\n      '37': {\n        inputs: { unet_name: 'Wan2.2/wan2.2_ti2v_5B_fp16.safetensors', weight_dtype: 'default' },\n        class_type: 'UNETLoader',\n        _meta: { title: 'UNETLoader' }\n      },\n      '38': {\n        inputs: { clip_name: 'umt5_xxl_fp8_e4m3fn_scaled.safetensors', type: 'wan' },\n        class_type: 'CLIPLoader',\n        _meta: { title: 'CLIPLoader' }\n      },\n      '39': {\n        inputs: { vae_name: 'wan2.2_vae.safetensors' },\n        class_type: 'VAELoader',\n        _meta: { title: 'VAELoader' }\n      },\n      '47': {\n        inputs: { images: ['8', 0], filename_prefix: 'BrandFusion_Render', codec: 'vp9', fps: 24, crf: 12.0 },\n        class_type: 'SaveWEBM',\n        _meta: { title: 'SaveWEBM' }\n      },\n      '48': {\n        inputs: { model: ['37', 0], shift: 8.0 },\n        class_type: 'ModelSamplingSD3',\n        _meta: { title: 'ModelSamplingSD3' }\n      },\n      '55': {\n        inputs: { vae: ['39', 0], width: 832, height: 480, length: Math.max(49, Math.min(145, Math.round(((Number(brief.duration_seconds) || 4) * 24) + 1))), batch_size: 1 },\n        class_type: 'Wan22ImageToVideoLatent',\n        _meta: { title: 'Wan22ImageToVideoLatent' }\n      }\n    }\n  };\n}\n\nreturn [{ json: { ...brief, render_backend, comfy_payload: prompt } }];"
+      },
+      "id": "build-render-payload-hybrid",
+      "name": "Build Render Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1840, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://1.34.114.64:62205/prompt?token=092475c6eb5141de21d222d375448c29cdd73c24db753dc2250c5664c3fcbb67",
+        "sendBody": true,
+        "options": {},
+        "authentication": "none",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.comfy_payload) }}"
+      },
+      "id": "submit-render-hybrid",
+      "name": "Submit Render",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2060, 320]
+    },
+    {
+      "parameters": {
+        "amount": 120,
+        "unit": "seconds"
+      },
+      "id": "wait-for-render-hybrid",
+      "name": "Wait For Render",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [2280, 320]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://1.34.114.64:62205/history/{{ $('Submit Render').item.json.prompt_id }}?token=092475c6eb5141de21d222d375448c29cdd73c24db753dc2250c5664c3fcbb67",
+        "sendBody": false,
+        "options": {},
+        "authentication": "none"
+      },
+      "id": "fetch-render-history-hybrid",
+      "name": "Fetch Render History",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2500, 320]
+    },
+    {
+      "parameters": {
+        "jsCode": "const historyRoot = $json || {};\nconst promptId = $('Submit Render').item.json.prompt_id;\nconst history = historyRoot[promptId] || historyRoot;\nconst outputs = history.outputs || {};\nlet file = null;\nfor (const nodeId of Object.keys(outputs)) {\n  const nodeOutput = outputs[nodeId] || {};\n  for (const key of Object.keys(nodeOutput)) {\n    const value = nodeOutput[key];\n    if (Array.isArray(value)) {\n      for (const entry of value) {\n        if (entry && entry.filename) {\n          file = { ...entry, nodeId, outputKey: key };\n          break;\n        }\n      }\n    }\n    if (file) break;\n  }\n  if (file) break;\n}\nconst status = history.status?.status_str || history.status || 'unknown';\nif (!file) {\n  return [{ json: { prompt_id: promptId, status, ready: false, render_backend: $('Build Render Payload').item.json.render_backend, message: 'No downloadable output found yet. Increase wait time or poll again.', brief: $('Build Render Payload').item.json } }];\n}\nconst filename = encodeURIComponent(file.filename);\nconst subfolder = encodeURIComponent(file.subfolder || '');\nconst type = encodeURIComponent(file.type || 'output');\nconst downloadUrl = `http://1.34.114.64:62205/view?filename=${filename}&subfolder=${subfolder}&type=${type}&token=092475c6eb5141de21d222d375448c29cdd73c24db753dc2250c5664c3fcbb67`;\nreturn [{ json: { prompt_id: promptId, status, ready: true, render_backend: $('Build Render Payload').item.json.render_backend, filename: file.filename, subfolder: file.subfolder || '', type: file.type || 'output', download_url: downloadUrl, brief: $('Build Render Payload').item.json } }];"
+      },
+      "id": "extract-download-url-hybrid",
+      "name": "Extract Download URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2720, 320]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.download_url }}",
+        "responseFormat": "file",
+        "options": {},
+        "authentication": "none"
+      },
+      "id": "download-video-hybrid",
+      "name": "Download Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2940, 320]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": false,
+        "values": {
+          "string": [
+            { "name": "render_backend", "value": "={{ $('Extract Download URL').item.json.render_backend }}" },
+            { "name": "prompt_id", "value": "={{ $('Extract Download URL').item.json.prompt_id }}" },
+            { "name": "status", "value": "={{ $('Extract Download URL').item.json.status }}" },
+            { "name": "filename", "value": "={{ $('Extract Download URL').item.json.filename || '' }}" },
+            { "name": "download_url", "value": "={{ $('Extract Download URL').item.json.download_url || '' }}" },
+            { "name": "caption_angle", "value": "={{ $('Extract Download URL').item.json.brief ? $('Extract Download URL').item.json.brief.caption_angle : '' }}" },
+            { "name": "hero_prompt", "value": "={{ $('Extract Download URL').item.json.brief ? $('Extract Download URL').item.json.brief.hero_prompt : '' }}" }
+          ],
+          "boolean": [
+            { "name": "ready", "value": "={{ $('Extract Download URL').item.json.ready }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "render-summary-hybrid",
+      "name": "Render Summary",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [3160, 320]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Reference Input", "type": "main", "index": 0 }]] },
+    "Reference Input": { "main": [[{ "node": "Reference Analyzer", "type": "main", "index": 0 }]] },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [[
+        { "node": "Reference Analyzer", "type": "ai_languageModel", "index": 0 },
+        { "node": "Safe Transformer", "type": "ai_languageModel", "index": 0 },
+        { "node": "Render Brief Builder", "type": "ai_languageModel", "index": 0 }
+      ]]
+    },
+    "Reference Analyzer": { "main": [[{ "node": "Safe Transformer", "type": "main", "index": 0 }]] },
+    "Safe Transformer": { "main": [[{ "node": "Render Brief Builder", "type": "main", "index": 0 }]] },
+    "Render Brief Builder": { "main": [[{ "node": "Normalize Render Brief", "type": "main", "index": 0 }]] },
+    "Normalize Render Brief": { "main": [[{ "node": "Build Render Payload", "type": "main", "index": 0 }]] },
+    "Build Render Payload": { "main": [[{ "node": "Submit Render", "type": "main", "index": 0 }]] },
+    "Submit Render": { "main": [[{ "node": "Wait For Render", "type": "main", "index": 0 }]] },
+    "Wait For Render": { "main": [[{ "node": "Fetch Render History", "type": "main", "index": 0 }]] },
+    "Fetch Render History": { "main": [[{ "node": "Extract Download URL", "type": "main", "index": 0 }]] },
+    "Extract Download URL": { "main": [[{ "node": "Download Video", "type": "main", "index": 0 }, { "node": "Render Summary", "type": "main", "index": 0 }]] },
+    "Download Video": { "main": [[{ "node": "Render Summary", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "reference-safe-trend-to-hybrid-render-v1",
+  "tags": []
+}

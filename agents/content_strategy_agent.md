@@ -8,8 +8,16 @@
 3. Identify the visual flow (e.g., 3 seconds face-to-camera, 5 seconds b-roll, 4 seconds speed-ramp).
 4. Write a NEW script that follows the same pacing and hook structure but uses an entirely different scenario.
 5. Provide specific text-to-speech emotion tags (e.g., `[laughing nervously]`, `[whispering intensely]`) for the voiceover agent (FishAudio S2).
+6. Favor concepts that can be rendered cleanly in AI video: one main subject, clear action, clean environment, and simple camera movement.
+7. Avoid concepts that force chaotic motion, extreme low light, crowded scenes, or ultra-stylized neon contrast unless explicitly requested.
 
 **Output Format**:
-- **Viral Mechanics Analysis**: (Brief breakdown of why the original worked)
-- **New Script**: (The original rewritten script)
-- **Audio Prompts**: (The FishAudio S2 ready script with emotion tags)
+Return valid JSON only:
+```json
+{
+	"viral_mechanics_analysis": "Brief breakdown of why the original worked",
+	"new_script": "The rewritten original script",
+	"audio_prompts": "The FishAudio S2 ready script with emotion tags",
+	"visual_direction": "Short note describing the clean visual style best suited for high-quality AI video generation"
+}
+```

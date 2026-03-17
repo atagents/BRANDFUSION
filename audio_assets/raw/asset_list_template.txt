@@ -1,0 +1,16 @@
+Place these files in this folder before running the audio mix script:
+
+- sea_noise.wav
+- construction_rumble.wav
+- welding_texture.wav
+
+Recommended characteristics:
+- sea_noise.wav: clean coastal ambience, low wind, no voices
+- construction_rumble.wav: distant machinery / site rumble, no sharp transients
+- welding_texture.wav: light metallic buzz/spark texture, subtle, not harsh
+
+Target format:
+- WAV
+- 48kHz
+- stereo
+- 20s to 60s minimum

@@ -1,0 +1,317 @@
+{
+  "name": "Stealth AI Ad Agency Pipeline (Tier 4)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "75914124-9730-44ce-b9ee-1ca3a93db184",
+      "name": "Schedule Trigger (Daily)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.example.com/viral-tiktok-trends",
+        "options": {}
+      },
+      "id": "4cfc2b13-c331-4dfd-a3ef-6d7cd9abf93f",
+      "name": "Fetch Viral Trends API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        112,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8188/prompt",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "=# {{ $json.comfyui_brandfusion_workflow }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7fe0485d-1207-4034-974f-cc02f4d50177",
+      "name": "Trigger ComfyUI (BrandFusion)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1360,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3-haiku",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        304,
+        384
+      ],
+      "id": "27f1eb15-0e1d-430f-bd98-d2327a0aa671",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        592,
+        384
+      ],
+      "id": "67d74c86-f18e-4d8a-9cbe-e6b1bb179627",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        400
+      ],
+      "id": "1a9cf3e5-9e65-46b4-959e-68100ca1c667",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "# Role: Creative Director & Camera Agent  **Objective**: Your job is to take a rewritten viral script and translate it into precise visual prompts and camera trajectories for AI video generators, specifically optimizing for ShotVerse and Higgsfield Cinema Studio.  **Instructions**: 1. Read the script provided by the Content Strategy Agent. 2. Break the script down into a sequence of distinct \"Shots\" (maximum 6 shots, total 12 seconds). 3. For each shot, provide a highly detailed visual prompt. Describe lighting, atmosphere, set design, and the character's physical description (to be used with WildActor for consistency). 4. For each shot, define the specific camera movement required (e.g., fast dolly-in, slow orbital pan, static wide shot). 5. Ensure the visual pacing matches the audio pacing.  **Output Format**: Provide a JSON or structured list for each shot: - **Shot Number**: - **Duration**: (in seconds) - **Visual Prompt**: (Detailed description for the video model) - **Character Lock Details**: (Specifics for WildActor consistency) - **Camera Trajectory**: (Specific movement instructions for ShotVerse/Higgsfield)"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        592,
+        128
+      ],
+      "id": "65904f07-f287-4c94-bcb4-2e7bb3c05837",
+      "name": "Basic LLM Chain 2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=={{ $json.text }} Target Brand: \"Coca-Cola Can\"",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "# Role: Brand Integration Strategist  **Objective**: Your job is to analyze the sequence of video shots created by the Creative Director Agent and identify the single best moment to seamlessly integrate a sponsor's brand or product using BrandFusion, ensuring maximum visibility without feeling like a forced advertisement.  **Instructions**: 1. Review the detailed shot list and the specified target brand/product. 2. Identify which shot offers the most natural physical space and context for the product to appear (e.g., a logo on a coffee cup resting on a desk during a slow dolly-in). 3. Avoid placing the brand in fast-moving action shots where it will be blurred. 4. Draft the specific BrandFusion instruction prompt.  **Output Format**: - **Target Shot**: (e.g., Shot 3) - **Integration Rationale**: (Why this is the most natural spot) - **BrandFusion Prompt Addition**: (The exact text to append to the generation prompt to naturally include the item)"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1056,
+        128
+      ],
+      "id": "051551b7-1b40-4b29-b31a-a292df3e0cda",
+      "name": "Basic LLM Chain 3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "\"Transcript to rewrite: I'm a 24-year-old making $100k a month, and here is my exact morning routine. First, I wake up at 4 AM and immediately drink a tall glass of lemon water. Then I do 10 minutes of journaling before opening my laptop to check Shopify sales. The secret isn't working harder, it's working weirder.\"",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "# Role: Viral Content Strategy Agent  **Objective**: Your job is to analyze currently viral videos (TikTok, Shorts, Reels) and reverse-engineer their core hooks, pacing, and emotional triggers. You then must rewrite these scripts to be entirely original, avoiding copyright infringement, while maintaining the exact viral mechanics.  **Instructions**: 1. Take the transcript/description of a viral video provided by the user. 2. Identify the core \"Viral Hook\" (e.g., Oddly satisfying, strong contrarian opinion, emotional storytelling). 3. Identify the visual flow (e.g., 3 seconds face-to-camera, 5 seconds b-roll, 4 seconds speed-ramp). 4. Write a NEW script that follows the same pacing and hook structure but uses an entirely different scenario. 5. Provide specific text-to-speech emotion tags (e.g., `[laughing nervously]`, `[whispering intensely]`) for the voiceover agent (FishAudio S2).  **Output Format**: - **Viral Mechanics Analysis**: (Brief breakdown of why the original worked) - **New Script**: (The original rewritten script) - **Audio Prompts**: (The FishAudio S2 ready script with emotion tags)"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        304,
+        128
+      ],
+      "id": "1cb084b3-d792-444f-aaf6-a70fed554e39",
+      "name": "Basic LLM Chain 1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://1.34.114.64:62205/prompt?token=092475c6eb5141de21d222d375448c29cdd73c24db753dc2250c5664c3fcbb67",
+        "sendBody": true,
+        "options": {},
+        "authentication": "none",
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": {\n    \"3\": {\n      \"inputs\": {\n        \"model\": [\"48\", 0],\n        \"positive\": [\"6\", 0],\n        \"negative\": [\"7\", 0],\n        \"latent_image\": [\"55\", 0],\n        \"seed\": 285741127119524,\n        \"steps\": 36,\n        \"cfg\": 4,\n        \"sampler_name\": \"uni_pc\",\n        \"scheduler\": \"simple\",\n        \"denoise\": 1\n      },\n      \"class_type\": \"KSampler\",\n      \"_meta\": {\"title\": \"KSampler\"}\n    },\n    \"6\": {\n      \"inputs\": {\"clip\": [\"38\", 0], \"text\": {{ JSON.stringify(\"premium product commercial, clean composition, realistic textures, natural skin tones, balanced exposure, soft contrast, controlled highlights, cinematic but realistic color grading, smooth camera motion, polished advertising aesthetic, \" + ($json.text || \"\")) }} },\n      \"class_type\": \"CLIPTextEncode\",\n      \"_meta\": {\"title\": \"CLIP Text Encode (Positive Prompt)\"}\n    },\n    \"7\": {\n      \"inputs\": {\"clip\": [\"38\", 0], \"text\": \"oversaturated colors, harsh contrast, clipped highlights, crushed blacks, overexposure, static, blurry details, subtitles, artwork, painting, still image, gray tone, neon color cast, worst quality, low quality, JPEG artifacts, ugly, broken, extra fingers, poorly drawn hands, poorly drawn face, deformed, disfigured, malformed limbs, fused fingers, motionless frame, cluttered background, three legs\"},\n      \"class_type\": \"CLIPTextEncode\",\n      \"_meta\": {\"title\": \"CLIP Text Encode (Negative Prompt)\"}\n    },\n    \"8\": {\n      \"inputs\": {\"samples\": [\"3\", 0], \"vae\": [\"39\", 0]},\n      \"class_type\": \"VAEDecode\",\n      \"_meta\": {\"title\": \"VAEDecode\"}\n    },\n    \"37\": {\n      \"inputs\": {\"unet_name\": \"Wan2.2/wan2.2_ti2v_5B_fp16.safetensors\", \"weight_dtype\": \"default\"},\n      \"class_type\": \"UNETLoader\",\n      \"_meta\": {\"title\": \"UNETLoader\"}\n    },\n    \"38\": {\n      \"inputs\": {\"clip_name\": \"umt5_xxl_fp8_e4m3fn_scaled.safetensors\", \"type\": \"wan\"},\n      \"class_type\": \"CLIPLoader\",\n      \"_meta\": {\"title\": \"CLIPLoader\"}\n    },\n    \"39\": {\n      \"inputs\": {\"vae_name\": \"wan2.2_vae.safetensors\"},\n      \"class_type\": \"VAELoader\",\n      \"_meta\": {\"title\": \"VAELoader\"}\n    },\n    \"47\": {\n      \"inputs\": {\"images\": [\"8\", 0], \"filename_prefix\": \"ComfyUI_video\", \"codec\": \"vp9\", \"fps\": 24, \"crf\": 12.0},\n      \"class_type\": \"SaveWEBM\",\n      \"_meta\": {\"title\": \"SaveWEBM\"}\n    },\n    \"48\": {\n      \"inputs\": {\"model\": [\"37\", 0], \"shift\": 8.0},\n      \"class_type\": \"ModelSamplingSD3\",\n      \"_meta\": {\"title\": \"ModelSamplingSD3\"}\n    },\n    \"55\": {\n      \"inputs\": {\"vae\": [\"39\", 0], \"width\": 832, \"height\": 480, \"length\": 121, \"batch_size\": 1},\n      \"class_type\": \"Wan22ImageToVideoLatent\",\n      \"_meta\": {\"title\": \"Wan22ImageToVideoLatent\"}\n    }\n  }\n}"
+      },
+      "id": "e38ed242-14ab-4cdd-9521-58eab5905bb7",
+      "name": "ComfyUI Render",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        896,
+        128
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger (Daily)": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Viral Trends API": {
+      "main": [
+        []
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain 1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain 2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain 3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain 2": {
+      "main": [
+        [
+          {
+            "node": "ComfyUI Render",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain 3": {
+      "main": [
+        [
+          {
+            "node": "Trigger ComfyUI (BrandFusion)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain 1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ComfyUI Render": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7323707d-fefc-4c52-9768-a8d910681407",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "750ef17dadfa2796797a8e3269569703545f87f573b1d309db9e4a2658f489c7"
+  },
+  "id": "c7PN-X7XuS6PK_Cx2uBYe",
+  "tags": []
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "video": "video_assets/ComfyUI_00002_.mp4",
+    "output": "video_assets/final_with_audio/ComfyUI_00002_ambient_mix.mp4",
+    "mood": "industrial coast, distant sea, restrained construction energy",
+    "notes": "Base sea wash with low industrial rumble. Keep it subtle and cinematic.",
+    "layers": [
+      {
+        "file": "audio_assets/raw/sea_noise.wav",
+        "volume": 0.20,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/construction_rumble.wav",
+        "volume": 0.10,
+        "startSeconds": 0
+      }
+    ]
+  },
+  {
+    "video": "video_assets/ComfyUI_00003_.mp4",
+    "output": "video_assets/final_with_audio/ComfyUI_00003_welding_sea_mix.mp4",
+    "mood": "close welding texture with sea air behind it",
+    "notes": "Use sea as bed, then add light welding texture offset slightly after the opening.",
+    "layers": [
+      {
+        "file": "audio_assets/raw/sea_noise.wav",
+        "volume": 0.18,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/welding_texture.wav",
+        "volume": 0.09,
+        "startSeconds": 0.6
+      },
+      {
+        "file": "audio_assets/raw/construction_rumble.wav",
+        "volume": 0.06,
+        "startSeconds": 0
+      }
+    ]
+  },
+  {
+    "video": "video_assets/ComfyUI_00004_.mp4",
+    "output": "video_assets/final_with_audio/ComfyUI_00004_coastal_worksite_mix.mp4",
+    "mood": "coastal worksite ambience, heavier than the first two",
+    "notes": "Slightly fuller industrial layer, but still background-only. Avoid overpowering the visuals.",
+    "layers": [
+      {
+        "file": "audio_assets/raw/sea_noise.wav",
+        "volume": 0.16,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/construction_rumble.wav",
+        "volume": 0.12,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/welding_texture.wav",
+        "volume": 0.07,
+        "startSeconds": 1.0
+      }
+    ]
+  }
+]

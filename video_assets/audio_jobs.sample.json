@@ -1,0 +1,55 @@
+[
+  {
+    "video": "video_assets/ComfyUI_00002_.mp4",
+    "output": "video_assets/final_with_audio/ComfyUI_00002_ambient.mp4",
+    "layers": [
+      {
+        "file": "audio_assets/raw/sea_noise.wav",
+        "volume": 0.18,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/construction_rumble.wav",
+        "volume": 0.12,
+        "startSeconds": 0
+      }
+    ]
+  },
+  {
+    "video": "video_assets/ComfyUI_00003_.mp4",
+    "output": "video_assets/final_with_audio/ComfyUI_00003_ambient.mp4",
+    "layers": [
+      {
+        "file": "audio_assets/raw/sea_noise.wav",
+        "volume": 0.22,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/welding_texture.wav",
+        "volume": 0.08,
+        "startSeconds": 0.5
+      }
+    ]
+  },
+  {
+    "video": "video_assets/ComfyUI_00004_.mp4",
+    "output": "video_assets/final_with_audio/ComfyUI_00004_ambient.mp4",
+    "layers": [
+      {
+        "file": "audio_assets/raw/sea_noise.wav",
+        "volume": 0.15,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/construction_rumble.wav",
+        "volume": 0.10,
+        "startSeconds": 0
+      },
+      {
+        "file": "audio_assets/raw/welding_texture.wav",
+        "volume": 0.06,
+        "startSeconds": 1.0
+      }
+    ]
+  }
+]

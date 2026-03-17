@@ -1,0 +1,242 @@
+{
+  "name": "Reference-Safe Trend to Render and Fetch",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger-end-to-end",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "source_url", "value": "https://www.tiktok.com/@example/video/1234567890" },
+            { "name": "platform", "value": "tiktok" },
+            { "name": "title", "value": "Morning routine that feels secretly luxurious" },
+            { "name": "creator", "value": "@example_creator" },
+            { "name": "transcript", "value": "I stopped starting my mornings in chaos. Now I do three small things that make the whole day feel expensive, calm, and in control." },
+            { "name": "target_brand", "value": "Minimal skincare brand" },
+            { "name": "target_product", "value": "Hydrating serum bottle" },
+            { "name": "output_goal", "value": "Create an original premium lifestyle commercial inspired by the viral mechanics, not the literal source content." }
+          ],
+          "number": [
+            { "name": "views", "value": 1200000 },
+            { "name": "likes", "value": 98000 }
+          ]
+        },
+        "options": {}
+      },
+      "id": "reference-input-e2e",
+      "name": "Reference Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [760, 620],
+      "id": "openrouter-model-e2e",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ JSON.stringify($json, null, 2) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Reference Analyzer for a reference-safe viral remake pipeline. Analyze the provided viral content as reference material only. Extract viral mechanics, pacing, shot rhythm, emotional structure, and visual patterns. Do not preserve literal wording, identifiable creator traits, exact framing, or any direct copyable expression. Return valid JSON only with this schema: { \"reference_summary\": \"...\", \"hook_type\": \"...\", \"pacing\": { \"avg_shot_seconds\": 0, \"estimated_cut_count\": 0, \"energy_curve\": [\"high\", \"medium\"] }, \"visual_mechanics\": { \"environment_type\": \"...\", \"camera_style\": \"...\", \"scene_pattern\": [\"...\"] }, \"emotional_trigger\": \"...\", \"copyright_risk_notes\": [\"...\"], \"safe_takeaways\": [\"...\"] }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [760, 300],
+      "id": "reference-analyzer-e2e",
+      "name": "Reference Analyzer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reference input:\n{{ $('Reference Input').item.json.source_url }}\n{{ $('Reference Input').item.json.platform }}\n{{ $('Reference Input').item.json.title }}\n{{ $('Reference Input').item.json.transcript }}\n\nExtracted mechanics JSON:\n{{ $json.text }}\n\nBrand: {{ $('Reference Input').item.json.target_brand }}\nProduct: {{ $('Reference Input').item.json.target_product }}\nGoal: {{ $('Reference Input').item.json.output_goal }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Safe Transformer. Convert the extracted viral mechanics into a new original commercial direction for the target brand and product. Keep the mechanism, not the expression. Change setting, subject, copy, visual details, and product context enough to avoid direct resemblance. Favor scenes that render well in current AI video models: one clear subject, simple action, believable environment, balanced exposure, soft contrast, and smooth camera motion. Return valid JSON only with this schema: { \"new_angle\": \"...\", \"new_setting\": \"...\", \"new_subject\": \"...\", \"product_role\": \"...\", \"style_constraints\": [\"...\"], \"avoid_list\": [\"...\"], \"originality_notes\": [\"...\"], \"commercial_direction\": \"...\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [1080, 300],
+      "id": "safe-transformer-e2e",
+      "name": "Safe Transformer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reference input JSON:\n{{ JSON.stringify($('Reference Input').item.json, null, 2) }}\n\nMechanics JSON:\n{{ $('Reference Analyzer').item.json.text }}\n\nTransformed brief JSON:\n{{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Render Brief Builder for AI product video generation. Produce a compact, high-quality render brief for n8n and ComfyUI. The output must be original, product-friendly, and model-friendly. Favor short clips, believable lifestyle setups, soft daylight or clean studio light, realistic textures, and product readability. Return valid JSON only with this schema: { \"master_visual_direction\": \"...\", \"hero_prompt\": \"...\", \"negative_prompt\": \"...\", \"duration_seconds\": 0, \"aspect_ratio\": \"832x480\", \"shot_plan\": [ { \"shot_number\": 1, \"duration_seconds\": 0, \"visual_prompt\": \"...\", \"camera_trajectory\": \"...\", \"quality_notes\": \"...\" } ], \"brand_integration_notes\": \"...\", \"caption_angle\": \"...\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [1400, 300],
+      "id": "render-brief-builder-e2e",
+      "name": "Render Brief Builder"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.text || '';\n\nfunction extractJson(text) {\n  const trimmed = String(text || '').trim();\n  if (!trimmed) return null;\n\n  try {\n    return JSON.parse(trimmed);\n  } catch {}\n\n  const codeBlockMatch = trimmed.match(/```(?:json)?\\s*([\\s\\S]*?)```/i);\n  if (codeBlockMatch) {\n    try {\n      return JSON.parse(codeBlockMatch[1].trim());\n    } catch {}\n  }\n\n  const start = trimmed.indexOf('{');\n  const end = trimmed.lastIndexOf('}');\n  if (start !== -1 && end !== -1 && end > start) {\n    try {\n      return JSON.parse(trimmed.slice(start, end + 1));\n    } catch {}\n  }\n\n  return null;\n}\n\nconst parsed = extractJson(raw) || {};\nconst defaultBrief = {\n  master_visual_direction: 'Clean premium lifestyle product video, soft daylight, realistic textures, calm modern environment, balanced exposure, smooth camera movement.',\n  hero_prompt: 'cinematic product commercial, close-up lifestyle shot of a minimalist skincare serum bottle on a clean beige marble bathroom counter, soft natural daylight, realistic reflections, premium packaging, photorealistic, smooth handheld motion, shallow depth of field, balanced contrast, high detail',\n  negative_prompt: 'blurry, low quality, deformed objects, warped hands, extra fingers, duplicate items, floating objects, messy background, text artifacts, logo distortion, oversaturated, harsh contrast, clipped highlights, crushed shadows, flicker, jitter, unrealistic geometry',\n  duration_seconds: 4,\n  aspect_ratio: '832x480',\n  shot_plan: [],\n  brand_integration_notes: 'Keep the product readable and central in a believable lifestyle environment.',\n  caption_angle: 'A small routine detail that makes the whole morning feel premium.'\n};\n\nconst brief = { ...defaultBrief, ...parsed };\nbrief.master_visual_direction = String(brief.master_visual_direction || defaultBrief.master_visual_direction);\nbrief.hero_prompt = String(brief.hero_prompt || defaultBrief.hero_prompt);\nbrief.negative_prompt = String(brief.negative_prompt || defaultBrief.negative_prompt);\nbrief.aspect_ratio = String(brief.aspect_ratio || defaultBrief.aspect_ratio);\nbrief.brand_integration_notes = String(brief.brand_integration_notes || defaultBrief.brand_integration_notes);\nbrief.caption_angle = String(brief.caption_angle || defaultBrief.caption_angle);\nbrief.duration_seconds = Number.isFinite(Number(brief.duration_seconds)) ? Math.max(2, Math.min(6, Number(brief.duration_seconds))) : defaultBrief.duration_seconds;\nbrief.shot_plan = Array.isArray(brief.shot_plan) ? brief.shot_plan : [];\n\nreturn [{ json: { ...brief, raw_llm_text: raw, parse_ok: !!extractJson(raw) } }];"
+      },
+      "id": "normalize-render-brief",
+      "name": "Normalize Render Brief",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1580, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://1.34.114.64:62205/prompt?token=092475c6eb5141de21d222d375448c29cdd73c24db753dc2250c5664c3fcbb67",
+        "sendBody": true,
+        "options": {},
+        "authentication": "none",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: { '3': { inputs: { model: ['48', 0], positive: ['6', 0], negative: ['7', 0], latent_image: ['55', 0], seed: 285741127119524, steps: 36, cfg: 4, sampler_name: 'uni_pc', scheduler: 'simple', denoise: 1 }, class_type: 'KSampler', _meta: { title: 'KSampler' } }, '6': { inputs: { clip: ['38', 0], text: $json.hero_prompt }, class_type: 'CLIPTextEncode', _meta: { title: 'CLIP Text Encode (Positive Prompt)' } }, '7': { inputs: { clip: ['38', 0], text: $json.negative_prompt }, class_type: 'CLIPTextEncode', _meta: { title: 'CLIP Text Encode (Negative Prompt)' } }, '8': { inputs: { samples: ['3', 0], vae: ['39', 0] }, class_type: 'VAEDecode', _meta: { title: 'VAEDecode' } }, '37': { inputs: { unet_name: 'Wan2.2/wan2.2_ti2v_5B_fp16.safetensors', weight_dtype: 'default' }, class_type: 'UNETLoader', _meta: { title: 'UNETLoader' } }, '38': { inputs: { clip_name: 'umt5_xxl_fp8_e4m3fn_scaled.safetensors', type: 'wan' }, class_type: 'CLIPLoader', _meta: { title: 'CLIPLoader' } }, '39': { inputs: { vae_name: 'wan2.2_vae.safetensors' }, class_type: 'VAELoader', _meta: { title: 'VAELoader' } }, '47': { inputs: { images: ['8', 0], filename_prefix: 'BrandFusion_Render', codec: 'vp9', fps: 24, crf: 12.0 }, class_type: 'SaveWEBM', _meta: { title: 'SaveWEBM' } }, '48': { inputs: { model: ['37', 0], shift: 8.0 }, class_type: 'ModelSamplingSD3', _meta: { title: 'ModelSamplingSD3' } }, '55': { inputs: { vae: ['39', 0], width: 832, height: 480, length: Math.max(49, Math.min(145, Math.round((($json.duration_seconds || 4) * 24) + 1))), batch_size: 1 }, class_type: 'Wan22ImageToVideoLatent', _meta: { title: 'Wan22ImageToVideoLatent' } } } }) }}"
+      },
+      "id": "comfyui-render-e2e",
+      "name": "ComfyUI Render",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1760, 300]
+    },
+    {
+      "parameters": {
+        "amount": 90,
+        "unit": "seconds"
+      },
+      "id": "wait-for-render",
+      "name": "Wait For Render",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1980, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://1.34.114.64:62205/history/{{ $('ComfyUI Render').item.json.prompt_id }}?token=092475c6eb5141de21d222d375448c29cdd73c24db753dc2250c5664c3fcbb67",
+        "sendBody": false,
+        "options": {},
+        "authentication": "none"
+      },
+      "id": "fetch-render-history",
+      "name": "Fetch Render History",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2200, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const historyRoot = $json || {};\nconst promptId = $('ComfyUI Render').item.json.prompt_id;\nconst history = historyRoot[promptId] || historyRoot;\nconst outputs = history.outputs || {};\nlet file = null;\nfor (const nodeId of Object.keys(outputs)) {\n  const nodeOutput = outputs[nodeId] || {};\n  for (const key of Object.keys(nodeOutput)) {\n    const value = nodeOutput[key];\n    if (Array.isArray(value)) {\n      for (const entry of value) {\n        if (entry && entry.filename) {\n          file = { ...entry, nodeId, outputKey: key };\n          break;\n        }\n      }\n    }\n    if (file) break;\n  }\n  if (file) break;\n}\nconst status = history.status?.status_str || history.status || 'unknown';\nif (!file) {\n  return [{ json: {\n    prompt_id: promptId,\n    status,\n    ready: false,\n    message: 'No downloadable output found yet. Increase the wait time or poll again.'\n  } }];\n}\nconst filename = encodeURIComponent(file.filename);\nconst subfolder = encodeURIComponent(file.subfolder || '');\nconst type = encodeURIComponent(file.type || 'output');\nconst downloadUrl = `http://1.34.114.64:62205/view?filename=${filename}&subfolder=${subfolder}&type=${type}&token=092475c6eb5141de21d222d375448c29cdd73c24db753dc2250c5664c3fcbb67`;\nreturn [{ json: {\n  prompt_id: promptId,\n  status,\n  ready: true,\n  filename: file.filename,\n  subfolder: file.subfolder || '',\n  type: file.type || 'output',\n  download_url: downloadUrl,\n  brief: $('Normalize Render Brief').item.json\n} }];"
+      },
+      "id": "extract-download-url",
+      "name": "Extract Download URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2420, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.download_url }}",
+        "responseFormat": "file",
+        "options": {},
+        "authentication": "none"
+      },
+      "id": "download-video",
+      "name": "Download Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [2640, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": false,
+        "values": {
+          "string": [
+            { "name": "prompt_id", "value": "={{ $('Extract Download URL').item.json.prompt_id }}" },
+            { "name": "status", "value": "={{ $('Extract Download URL').item.json.status }}" },
+            { "name": "filename", "value": "={{ $('Extract Download URL').item.json.filename || '' }}" },
+            { "name": "download_url", "value": "={{ $('Extract Download URL').item.json.download_url || '' }}" },
+            { "name": "caption_angle", "value": "={{ $('Extract Download URL').item.json.brief ? $('Extract Download URL').item.json.brief.caption_angle : '' }}" },
+            { "name": "hero_prompt", "value": "={{ $('Extract Download URL').item.json.brief ? $('Extract Download URL').item.json.brief.hero_prompt : '' }}" }
+          ],
+          "boolean": [
+            { "name": "ready", "value": "={{ $('Extract Download URL').item.json.ready }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "render-summary",
+      "name": "Render Summary",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [2860, 300]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": { "main": [[{ "node": "Reference Input", "type": "main", "index": 0 }]] },
+    "Reference Input": { "main": [[{ "node": "Reference Analyzer", "type": "main", "index": 0 }]] },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [[
+        { "node": "Reference Analyzer", "type": "ai_languageModel", "index": 0 },
+        { "node": "Safe Transformer", "type": "ai_languageModel", "index": 0 },
+        { "node": "Render Brief Builder", "type": "ai_languageModel", "index": 0 }
+      ]]
+    },
+    "Reference Analyzer": { "main": [[{ "node": "Safe Transformer", "type": "main", "index": 0 }]] },
+    "Safe Transformer": { "main": [[{ "node": "Render Brief Builder", "type": "main", "index": 0 }]] },
+    "Render Brief Builder": { "main": [[{ "node": "Normalize Render Brief", "type": "main", "index": 0 }]] },
+    "Normalize Render Brief": { "main": [[{ "node": "ComfyUI Render", "type": "main", "index": 0 }]] },
+    "ComfyUI Render": { "main": [[{ "node": "Wait For Render", "type": "main", "index": 0 }]] },
+    "Wait For Render": { "main": [[{ "node": "Fetch Render History", "type": "main", "index": 0 }]] },
+    "Fetch Render History": { "main": [[{ "node": "Extract Download URL", "type": "main", "index": 0 }]] },
+    "Extract Download URL": { "main": [[{ "node": "Download Video", "type": "main", "index": 0 }, { "node": "Render Summary", "type": "main", "index": 0 }]] },
+    "Download Video": { "main": [[{ "node": "Render Summary", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "reference-safe-trend-to-render-and-fetch-v1",
+  "tags": []
+}

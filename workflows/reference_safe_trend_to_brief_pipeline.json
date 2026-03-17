@@ -1,0 +1,238 @@
+{
+  "name": "Reference-Safe Trend to Render Brief",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger-reference-safe",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        220,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "source_url",
+              "value": "https://www.tiktok.com/@example/video/1234567890"
+            },
+            {
+              "name": "platform",
+              "value": "tiktok"
+            },
+            {
+              "name": "title",
+              "value": "Morning routine that feels secretly luxurious"
+            },
+            {
+              "name": "creator",
+              "value": "@example_creator"
+            },
+            {
+              "name": "transcript",
+              "value": "I stopped starting my mornings in chaos. Now I do three small things that make the whole day feel expensive, calm, and in control."
+            },
+            {
+              "name": "target_brand",
+              "value": "Minimal skincare brand"
+            },
+            {
+              "name": "target_product",
+              "value": "Hydrating serum bottle"
+            },
+            {
+              "name": "output_goal",
+              "value": "Create an original premium lifestyle commercial inspired by the viral mechanics, not the literal source content."
+            }
+          ],
+          "number": [
+            {
+              "name": "views",
+              "value": 1200000
+            },
+            {
+              "name": "likes",
+              "value": 98000
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "reference-input",
+      "name": "Reference Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        760,
+        560
+      ],
+      "id": "openrouter-model-reference-safe",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ JSON.stringify($json, null, 2) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Reference Analyzer for a reference-safe viral remake pipeline. Analyze the provided viral content as reference material only. Extract viral mechanics, pacing, shot rhythm, emotional structure, and visual patterns. Do not preserve literal wording, identifiable creator traits, exact framing, or any direct copyable expression. Return valid JSON only with this schema: { \"reference_summary\": \"...\", \"hook_type\": \"...\", \"pacing\": { \"avg_shot_seconds\": 0, \"estimated_cut_count\": 0, \"energy_curve\": [\"high\", \"medium\"] }, \"visual_mechanics\": { \"environment_type\": \"...\", \"camera_style\": \"...\", \"scene_pattern\": [\"...\"] }, \"emotional_trigger\": \"...\", \"copyright_risk_notes\": [\"...\"], \"safe_takeaways\": [\"...\"] }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        760,
+        280
+      ],
+      "id": "reference-analyzer",
+      "name": "Reference Analyzer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reference input:\n{{ $('Reference Input').item.json.source_url }}\n{{ $('Reference Input').item.json.platform }}\n{{ $('Reference Input').item.json.title }}\n{{ $('Reference Input').item.json.transcript }}\n\nExtracted mechanics JSON:\n{{ $json.text }}\n\nBrand: {{ $('Reference Input').item.json.target_brand }}\nProduct: {{ $('Reference Input').item.json.target_product }}\nGoal: {{ $('Reference Input').item.json.output_goal }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Safe Transformer. Convert the extracted viral mechanics into a new original commercial direction for the target brand and product. Keep the mechanism, not the expression. Change setting, subject, copy, visual details, and product context enough to avoid direct resemblance. Favor scenes that render well in current AI video models: one clear subject, simple action, believable environment, balanced exposure, soft contrast, and smooth camera motion. Return valid JSON only with this schema: { \"new_angle\": \"...\", \"new_setting\": \"...\", \"new_subject\": \"...\", \"product_role\": \"...\", \"style_constraints\": [\"...\"], \"avoid_list\": [\"...\"], \"originality_notes\": [\"...\"], \"commercial_direction\": \"...\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1080,
+        280
+      ],
+      "id": "safe-transformer",
+      "name": "Safe Transformer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Reference input JSON:\n{{ JSON.stringify($('Reference Input').item.json, null, 2) }}\n\nMechanics JSON:\n{{ $('Reference Analyzer').item.json.text }}\n\nTransformed brief JSON:\n{{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a Render Brief Builder for AI product video generation. Produce a compact, high-quality render brief for n8n and ComfyUI. The output must be original, product-friendly, and model-friendly. Favor short clips, believable lifestyle setups, soft daylight or clean studio light, realistic textures, and product readability. Return valid JSON only with this schema: { \"master_visual_direction\": \"...\", \"hero_prompt\": \"...\", \"negative_prompt\": \"...\", \"duration_seconds\": 0, \"aspect_ratio\": \"832x480\", \"shot_plan\": [ { \"shot_number\": 1, \"duration_seconds\": 0, \"visual_prompt\": \"...\", \"camera_trajectory\": \"...\", \"quality_notes\": \"...\" } ], \"brand_integration_notes\": \"...\", \"caption_angle\": \"...\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1420,
+        280
+      ],
+      "id": "render-brief-builder",
+      "name": "Render Brief Builder"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Reference Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reference Input": {
+      "main": [
+        [
+          {
+            "node": "Reference Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Reference Analyzer",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Safe Transformer",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Render Brief Builder",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reference Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Safe Transformer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Safe Transformer": {
+      "main": [
+        [
+          {
+            "node": "Render Brief Builder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "reference-safe-trend-to-brief-v1",
+  "tags": []
+}
