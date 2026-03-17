@@ -40,16 +40,17 @@ Built specifically for TikTok, YouTube Shorts, Instagram Reels.
 
 ---
 
-## Part 2: ComfyUI Open-Source Models Ranked
+## Part 2: ComfyUI Open-Source Models Ranked (The 14B+ Tier S Club)
 
-These models run LOCALLY on your Vast.ai GPU. Zero API costs per generation.
+To maximize the ROI of a 24GB+ Cloud GPU (like the RTX 4090 on Vast.ai), you must use the absolute largest open-weight models available. The 5B parameter era is over for high-end cinematic ad agencies.
 
-| Model | Best Use Case | Resolution | Motion Quality | Prompt Adherence |
+| Model | Size | Best Use Case | Resolution | Native VRAM Requirement |
 |---|---|---|---|---|
-| **Wan 2.2 (Alibaba)** | Image-to-Video, product shots | **1080p Native** | ✅ Excellent | ✅ Strong |
-| **HunyuanVideo (Tencent)** | Text-to-Video, long sequences | 720p | ✅ Excellent | ✅ Strong |
-| **Mochi 1 (Genmo)** | Text-to-Video, motion physics | 720p | 🏆 Best-in-class | 🏆 Best-in-class |
-| **CogVideoX 5B (Zhipu AI)** | General T2V & I2V | 720p | ✅ Good | ✅ Strong |
+| **Wan 2.2-A14B (Alibaba)** | 14 Billion | Photorealistic Text-to-Video & Image-to-Video. Flawless 9:16 aspect ratio understanding. | 1080p | 24GB (bf16) |
+| **LTX Video 2.3 (Lightricks)** | 22 Billion | Native 4K output at 50 FPS with synchronized audio. | 4K | 24GB+ |
+| **HunyuanVideo (Tencent)** | 13 Billion | Best-in-class physics, fluid dynamics, and complex action/walking. | 720p/1080p | 14GB-24GB |
+| **Helios (Peking/Canva)** | 14 Billion | Autoregressive. Generates 60-second continuous looping shorts. | 720p | 24GB+ |
+| **FLUX.1 [dev]** | 12 Billion | *Image Generation Only*. Used to generate the perfect first frame before sending to Wan 2.2 I2V. | 4K Stills | 16GB-24GB |
 
 ### When to use ComfyUI vs Cloud APIs?
 
