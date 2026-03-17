@@ -1,0 +1,149 @@
+{
+  "name": "Hybrid Workflow B: Vast.ai Batch Uploader",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manually Execute Workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "VAST_AI_IP_ADDRESS",
+              "value": "http://1.23.45.67:8188"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-ip",
+      "name": "Set Vast.ai IP Address",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "notesInFlow": true,
+      "notes": "Update this IP every time you rent a new Vast.ai instance!"
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "path": "e:/SHVMSTORAGE/BRANDFUSION/video_assets/queue/"
+      },
+      "id": "list-queue",
+      "name": "List Queued Video Prompts",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.path }}",
+        "options": {}
+      },
+      "id": "read-files",
+      "name": "Read Prompt JSON",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [550, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Set Vast.ai IP Address').item.json.VAST_AI_IP_ADDRESS }}/prompt",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ JSON.stringify($json.data) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "post-to-comfy",
+      "name": "Batch Submit to Cloud GPU",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "path": "={{ $json.path }}"
+      },
+      "id": "delete-queue",
+      "name": "Move out of Queue",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Manually Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Set Vast.ai IP Address",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Vast.ai IP Address": {
+      "main": [
+        [
+          {
+            "node": "List Queued Video Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Queued Video Prompts": {
+      "main": [
+        [
+          {
+            "node": "Read Prompt JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Prompt JSON": {
+      "main": [
+        [
+          {
+            "node": "Batch Submit to Cloud GPU",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Submit to Cloud GPU": {
+      "main": [
+        [
+          {
+            "node": "Move out of Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "hybrid-workflow-b-1"
+}

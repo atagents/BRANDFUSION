@@ -1,0 +1,188 @@
+{
+  "name": "Hybrid Workflow A: Local Agent Queue Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "trigger-1",
+      "name": "Schedule Trigger (Every 12h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.example.com/viral-tiktok-trends",
+        "options": {}
+      },
+      "id": "fetch-trends",
+      "name": "Research Agent (Trend Scraper)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3-haiku",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [450, 450],
+      "id": "openrouter-api",
+      "name": "OpenRouter Chat API",
+      "credentials": {
+        "openRouterApi": {
+          "id": "II1hDotnXNuRrpns",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# {{ $json.viral_video_transcript }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "# Role: Content Agent \n\nAnalyze the provided viral video transcript and rewrite it into 3 completely original scripts following the same pacing, hook structure, and emotional triggers. Format output as JSON array."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [500, 300],
+      "id": "content-agent",
+      "name": "Content Agent (Script Writer)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# {{ $json.new_scripts }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "# Role: Creative Director \n\nFor each of the 3 scripts, write the EXACT 8-Element cinematic prompt required for Wan 2.2 Text-to-Video. Include the Universal Negative Prompt. Format as JSON."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [700, 300],
+      "id": "creative-director-agent",
+      "name": "Creative Director Agent (Visual Prompter)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const scripts = $input.all()[0].json.video_prompts;\nconst jsonPayloads = [];\n\nfor (let i = 0; i < scripts.length; i++) {\n  // Injecting prompt into the ComfyUI Wan2.2 layout\n  jsonPayloads.push({\n    fileName: `ready_to_render_video_${Date.now()}_${i}.json`,\n    payload: {\n      \"prompt\": {\n        \"6\": {\n          \"inputs\": {\n            \"text\": \"vertical 9:16 format, fast cuts, high contrast, vibrant saturation, \" + scripts[i].positive_prompt,\n            \"clip\": [\"38\", 0]\n          },\n          \"class_type\": \"CLIPTextEncode\"\n        },\n        \"55\": {\n          \"inputs\": {\n            \"width\": 768,\n            \"height\": 1344,\n            \"length\": 121,\n            \"batch_size\": 1,\n            \"vae\": [\"39\", 0]\n          },\n          \"class_type\": \"Wan22ImageToVideoLatent\"\n        }\n      }\n    }\n  });\n}\n\nreturn jsonPayloads;"
+      },
+      "id": "payload-builder",
+      "name": "Build ComfyUI Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "fileSelector": "e:/SHVMSTORAGE/BRANDFUSION/video_assets/queue/{{ $json.fileName }}",
+        "dataPropertyName": "payload",
+        "options": {
+          "append": false
+        }
+      },
+      "id": "save-to-disk",
+      "name": "Save to Local Queue",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1100, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Every 12h)": {
+      "main": [
+        [
+          {
+            "node": "Research Agent (Trend Scraper)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Agent (Trend Scraper)": {
+      "main": [
+        [
+          {
+            "node": "Content Agent (Script Writer)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat API": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Agent (Script Writer)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Creative Director Agent (Visual Prompter)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Agent (Script Writer)": {
+      "main": [
+        [
+          {
+            "node": "Creative Director Agent (Visual Prompter)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creative Director Agent (Visual Prompter)": {
+      "main": [
+        [
+          {
+            "node": "Build ComfyUI Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build ComfyUI Payload": {
+      "main": [
+        [
+          {
+            "node": "Save to Local Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "hybrid-workflow-a-1"
+}
