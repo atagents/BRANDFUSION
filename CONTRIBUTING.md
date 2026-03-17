@@ -24,7 +24,7 @@ To ensure all team members can build, test, and render videos without overriding
 ---
 
 ## 🖥️ 2. Cloud Compute Setup (Vast.ai)
-Because we are generating high-fidelity video (Wan2.2, Google Veo), you **cannot** run this entirely locally unless you own multiple RTX 4090s or an unconstrained Mac Studio.
+Because we are generating high-fidelity video (Wan 2.6, Google Veo), you **cannot** run this entirely locally unless you own multiple RTX 4090s or an unconstrained Mac Studio.
 
 *You must rent your own compute node so you do not burn another contributor's GPU credits.*
 

@@ -1,6 +1,6 @@
 # 🎬 BrandFusion Elite Content Library v2.0
 ## Advanced Viral AI Video Playbook — 2026 Edition
-*Covers: WAN 2.2 · Google Veo 3.1 · Kling 3.0 · Sora 2 · Mochi · HunyuanVideo*
+*Covers: Wan 2.6 · Google Veo 3.1 · Kling 3.0 · Sora 2 · Mochi · HunyuanVideo*
 
 ---
 
@@ -105,7 +105,7 @@ A massive ship hull being lowered into harbor water by enormous dock cranes, wor
 Extreme close-up of a welder's gloved hand guiding a welding torch along a steel seam, blowtorch tip producing a white-hot plasma arc, molten steel droplets falling in slow motion, heat shimmer distorting the air, camera starting on macro extreme close-up then slowly pulling back to reveal a massive industrial workshop, cinematic, 4K hyper-realistic
 ```
 
-#### ⚡ Tier A — WAN 2.2 / HunyuanVideo (Free on Vast.ai)
+#### ⚡ Tier A — Wan 2.6 / HunyuanVideo (Free on Vast.ai)
 ```
 A skilled metalworker grinding a massive steel beam in a factory, metal sparks flying horizontally in a dramatic cascade, dramatic underlighting from below, surrounding workers in the background blurred with shallow depth of field, industrial cinematic, slow motion sparks, strong silhouette rim lighting
 ```
@@ -358,11 +358,11 @@ A social media influencer getting a delivery, opening a package for the first ti
 | Photorealistic humans (lip-sync needed) | **Kling 3.0 API** | Best lip-sync, photorealistic characters, 4K |
 | Cinematic brand commercials | **Google Veo 3.1 API** | Native audio, broadcast-grade, IMAX-quality light |
 | Complex storytelling / multiple scenes | **Sora 2 API** | Best narrative continuity and physics |
-| Product beauty shots and I2V | **WAN 2.2 (ComfyUI)** | Best image-to-video, native 1080p, free per render |
+| Product beauty shots and I2V | **Wan 2.6 (ComfyUI)** | Best image-to-video, native 1080p, free per render |
 | Abstract / artistic / stylized | **Runway Gen-4.5 API** | Best creative control and experimental styles |
 | High-motion physics | **Mochi 1 (ComfyUI)** | Best-in-class motion physics, free per render |
 | Epic scale / landscapes | **HunyuanVideo (ComfyUI)** | Best scene consistency and environmental coherence |
-| Bulk daily social content | **WAN 2.2 / HunyuanVideo** | Free to generate unlimited, sufficient quality for TikTok |
+| Bulk daily social content | **Wan 2.6 / HunyuanVideo** | Free to generate unlimited, sufficient quality for TikTok |
 
 ---
 
@@ -386,7 +386,7 @@ The complete automated pipeline for daily viral content generation:
    ↓ Adds negative prompt
 
 4. [🎬 Video Render Node (ComfyUI API → Vast.ai)]
-   ↓ Sends to Wan2.2 or HunyuanVideo
+   ↓ Sends to Wan 2.6 or HunyuanVideo
    ↓ Waits for rendered MP4
 
 5. [🔊 Audio Node (AudioLDM)]

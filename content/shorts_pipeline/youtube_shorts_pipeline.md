@@ -86,7 +86,7 @@ Output JSON:
 ### Phase 3: Video Render + Voiceover
 
 **YouTube Viewers Expect Higher Production Quality:**
-- Minimum: Wan2.2 1080p
+- Minimum: Wan 2.6 1080p
 - Recommended: Kling 3.0 or Veo 3.1 for this platform
 - Always add: Professional voiceover (ElevenLabs) or genuine human voice
 

@@ -41,7 +41,7 @@ You are the Content Agent for BrandFusion. You are an expert AI video director, 
   "caption": "<platform-specific caption with hashtags>",
   "audio_suggestion": "<trending audio description or AudioLDM prompt>",
   "brand_placement": "<optional: how/where to insert brand>",
-  "model_recommendation": "Kling 3.0 | Veo 3.1 | Wan2.2 | HunyuanVideo",
+  "model_recommendation": "Kling 3.0 | Veo 3.1 | Wan 2.6 | HunyuanVideo",
   "render_tier": "A/B/C",
   "ab_hook_variants": ["Variant 1 hook", "Variant 2 hook"]
 }

@@ -16,7 +16,7 @@ Your local computer (even with a CPU or an AMD GPU) handles all the logic, orche
 **What runs locally:**
 *   **OpenClaw Agents:** The Supervisor, Research, Content, and Memory agents run locally. They use text-based API calls (OpenRouter/OpenAI) which require almost zero local computing power.
 *   **n8n Automation:** The central nervous system. It triggers the agents, monitors TikTok trends, and schedules the final video uploads.
-*   **ComfyUI (Headless/Control Mode):** You run ComfyUI locally to *build* and *test* the visual logic of the JSON workflows (like the vertical Wan 2.2 workflow).
+*   **ComfyUI (Headless/Control Mode):** You run ComfyUI locally to *build* and *test* the visual logic of the JSON workflows (like the vertical Wan 2.6 workflow).
 *   **Audio Generation:** API calls to ElevenLabs/FishAudio are triggered from the local PC.
 
 ---
@@ -26,7 +26,7 @@ You rent a massive GPU (Nvidia RTX 4090 or A6000) on Vast.ai for ~$0.40 to $0.80
 
 **What runs in the cloud:**
 *   **ComfyUI Backend (API Mode):** The cloud instance runs ComfyUI with the `--listen` flag enabled. It sits waiting for a payload.
-*   **Massive Models:** Wan 2.2 (5B), Sora (via API), Kling, Flux, or ShotVerse. 
+*   **Massive Models:** Wan 2.6 (5B), Sora (via API), Kling, Flux, or ShotVerse. 
 
 ---
 

@@ -4,7 +4,7 @@
 
 The AI video generation market is expected to hit $1.4 billion by 2027. In 2026, the major platforms have diverged into two camps: 
 1. **API-Only Cloud Tools** (Veo, Sora, Kling, Runway) — Highest quality, pay-per-generation.
-2. **Open-Source / Self-Hosted Tools via ComfyUI** (Wan2.2, HunyuanVideo, Mochi) — Free to run, requires GPU, maximum control.
+2. **Open-Source / Self-Hosted Tools via ComfyUI** (Wan 2.6, HunyuanVideo, Mochi) — Free to run, requires GPU, maximum control.
 
 ---
 
@@ -46,11 +46,11 @@ To maximize the ROI of a 24GB+ Cloud GPU (like the RTX 4090 on Vast.ai), you mus
 
 | Model | Size | Best Use Case | Resolution | Native VRAM Requirement |
 |---|---|---|---|---|
-| **Wan 2.2-A14B (Alibaba)** | 14 Billion | Photorealistic Text-to-Video & Image-to-Video. Flawless 9:16 aspect ratio understanding. | 1080p | 24GB (bf16) |
+| **Wan 2.6-A14B (Alibaba)** | 14 Billion | Photorealistic Text-to-Video & Image-to-Video. Flawless 9:16 aspect ratio understanding. | 1080p | 24GB (bf16) |
 | **LTX Video 2.3 (Lightricks)** | 22 Billion | Native 4K output at 50 FPS with synchronized audio. | 4K | 24GB+ |
 | **HunyuanVideo (Tencent)** | 13 Billion | Best-in-class physics, fluid dynamics, and complex action/walking. | 720p/1080p | 14GB-24GB |
 | **Helios (Peking/Canva)** | 14 Billion | Autoregressive. Generates 60-second continuous looping shorts. | 720p | 24GB+ |
-| **FLUX.1 [dev]** | 12 Billion | *Image Generation Only*. Used to generate the perfect first frame before sending to Wan 2.2 I2V. | 4K Stills | 16GB-24GB |
+| **FLUX.1 [dev]** | 12 Billion | *Image Generation Only*. Used to generate the perfect first frame before sending to Wan 2.6 I2V. | 4K Stills | 16GB-24GB |
 
 ### When to use ComfyUI vs Cloud APIs?
 
@@ -58,7 +58,7 @@ To maximize the ROI of a 24GB+ Cloud GPU (like the RTX 4090 on Vast.ai), you mus
 - You need maximum renders per day (no API credit limits)
 - You want to chain nodes (auto-upscale, add audio, apply face-swap, etc.)
 - You require a proprietary pipeline competitors can't replicate
-- You need 1080p Wan2.2 quality for client work at near-zero cost
+- You need 1080p Wan 2.6 quality for client work at near-zero cost
 
 **Use Cloud APIs (Veo/Kling/Sora) when:**
 - You need broadcast-quality 4K with native audio
@@ -113,7 +113,7 @@ This is the most cost-effective and scalable workflow for BrandFusion specifical
 ### Tier A: "Rapid Fire" (Zero Cost)
 - **Trend Monitoring Agent (n8n):** Scrapes TikTok and Twitter hourly for trending audio/topics.
 - **Script Agent (DeepSeek v4 via OpenRouter):** Writes 20-40 second scripts using the trending topic.
-- **Visual Agent (Wan2.2 via ComfyUI on Vast.ai):** Generates the video using the script as a prompt.
+- **Visual Agent (Wan 2.6 via ComfyUI on Vast.ai):** Generates the video using the script as a prompt.
 - **Audio Merge (VHS VideoCombine node):** Adds AudioLDM soundscape.
 - **Auto-Post (n8n Webhook → TikTok API):** Posts directly, no human needed.
 - **Cost:** ~$0.02 per video (only Vast.ai GPU time)

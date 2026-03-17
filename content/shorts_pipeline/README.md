@@ -49,7 +49,7 @@ tech_intelligence_2026/
           ┌────────────────▼─────────────────┐
           │  STEP 3: VIDEO RENDER            │
           │  ComfyUI (Vast.ai GPU)           │
-          │  Wan2.2 / HunyuanVideo / Kling   │
+          │  Wan 2.6 / HunyuanVideo / Kling   │
           └────────────────┬─────────────────┘
                            │
           ┌────────────────▼─────────────────┐
@@ -96,7 +96,7 @@ tech_intelligence_2026/
 
 | Tier | Daily Volume | Cost/Video | Tool Stack | Best For |
 |---|---|---|---|---|
-| **A — Rapid Fire** | 5-20 videos/day | ~$0.02 | n8n + Wan2.2 + Vast.ai | TikTok volume play |
+| **A — Rapid Fire** | 5-20 videos/day | ~$0.02 | n8n + Wan 2.6 + Vast.ai | TikTok volume play |
 | **B — Premium Social** | 1-5 videos/day | ~$1-2 | Kling 3.0 + CapCut | Client brand content |
 | **C — Broadcast** | 1-2 videos/week | ~$10-20 | Veo 3.1 + DaVinci | Paid client deliverables |
 

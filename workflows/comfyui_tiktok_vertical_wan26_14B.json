@@ -176,7 +176,7 @@
         "Node name for S&R": "VAELoader"
       },
       "widgets_values": [
-        "wan2.2_vae.safetensors"
+        "Wan 2.6_vae.safetensors"
       ],
       "color": "#223",
       "bgcolor": "#335"
@@ -285,7 +285,7 @@
         "Node name for S&R": "UNETLoader"
       },
       "widgets_values": [
-        "wan2.2_t2v_A14B_bf16.safetensors",
+        "wan2.6_t2v_A14B_bf16.safetensors",
         "default"
       ],
       "color": "#223",
@@ -348,7 +348,7 @@
     },
     {
       "id": 55,
-      "type": "Wan22ImageToVideoLatent",
+      "type": "Wan26ImageToVideoLatent",
       "pos": [
         420,
         610
@@ -383,7 +383,7 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "Wan22ImageToVideoLatent"
+        "Node name for S&R": "Wan26ImageToVideoLatent"
       },
       "widgets_values": [
         768,

@@ -14,7 +14,7 @@ The system is built on a hybrid local/cloud architecture to maintain security wh
    * n8n triggers the sub-agents and handles the final payload delivery to the video rendering engine.
 2. **The Rendering Engine (ComfyUI on Vast.ai):**
    * Video generation is incredibly GPU-intensive. We utilize **Vast.ai** cloud instances running RTX 3090/4090 GPUs.
-   * n8n sends API requests containing dynamic JSON payloads (prompts) directly to the ComfyUI instance running models like **Wan2.2 5B** and **Google Veo 3**.
+   * n8n sends API requests containing dynamic JSON payloads (prompts) directly to the ComfyUI instance running models like **Wan 2.6 14B** and **Google Veo 3**.
 3. **The Multi-Agent Swarm:**
    * **Brand Strategist Agent:** Analyzes the target client's brand and rewrites viral scripts to seamlessly integrate their product.
    * **Camera Director Agent:** Converts the script into hyper-specific, cinematic visual prompts understood by video-generation models.

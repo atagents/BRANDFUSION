@@ -74,7 +74,7 @@ Generate 3 content packages. Each must include:
 4. Caption (max 150 chars + 5 hashtags)
 5. Audio suggestion (trending sound name or AudioLDM description)
 6. AB hook variant (2 options)
-7. Model recommendation (Wan2.2 / Kling 3.0 / Veo 3.1)
+7. Model recommendation (Wan 2.6 / Kling 3.0 / Veo 3.1)
 ```
 
 **Output Example:**
@@ -90,7 +90,7 @@ Generate 3 content packages. Each must include:
   "negative_prompt": "static frame, blurry, overexposed, subtitles",
   "caption": "Nobody talks about the people building your world 🌊⚓ #shipbuilding #welding #satisfying #industrial #skilled",
   "audio_suggestion": "Trending: 'Epic Cinematic Build' sound or AudioLDM: deep industrial bass drone with spark metallic ping",
-  "model": "Wan2.2 (Tier A free) or Kling 3.0 (Tier B premium)",
+  "model": "Wan 2.6 (Tier A free) or Kling 3.0 (Tier B premium)",
   "render_tier": "A",
   "requires_human_approval": true
 }
@@ -100,13 +100,13 @@ Generate 3 content packages. Each must include:
 
 ### Phase 3: Video Render (ComfyUI / API)
 
-**Tier A (Wan2.2 on Vast.ai — Free)**
+**Tier A (Wan 2.6 on Vast.ai — Free)**
 ```
 n8n HTTP Request → ComfyUI API (Vast.ai endpoint)
 Payload: video_prompt from Phase 2
 Resolution: 1080x1920 (9:16 vertical)
 Duration: 4-8 seconds (loop 3-4x for 20s total feel)
-Model: Wan2.2 5B
+Model: Wan 2.6 14B
 ```
 
 **Tier B (Kling 3.0 API — ~$0.40/gen)**

@@ -99,7 +99,7 @@ DELIVERABLE REPORT:
   "negative_prompt": "static, blurry, subtitles...",
   "caption": "What holds the ocean back? 🌊 #shipbuilding #welding...",
   "audio": "AudioLDM: deep industrial drone + metallic spark pings",
-  "model": "Wan2.2",
+  "model": "Wan 2.6",
   "render_tier": "A",
   "requires_human_approval": true,
   "estimated_viral_score": 7.8
@@ -140,7 +140,7 @@ WINNING FORMATS LOG:
   "format": "Slow motion sparks + industrial scale reveal",
   "avg_watch_time_pct": 72,
   "avg_share_rate_pct": 2.1,
-  "best_model": "Wan2.2",
+  "best_model": "Wan 2.6",
   "best_audio": "Deep industrial drone"
 }
 
@@ -259,5 +259,5 @@ These are the exact natural language commands you can give to each agent:
 - "Create follow-up sequences for the 3 brands we contacted last week"
 
 **Supervisor Agent:**
-- "Should we upgrade from Wan2.2 to Kling 3.0 for TikTok this month?"
+- "Should we upgrade from Wan 2.6 to Kling 3.0 for TikTok this month?"
 - "What's our best performing niche right now and how should we scale it?"

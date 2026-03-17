@@ -396,7 +396,7 @@
         "Node name for S&R": "UNETLoader"
       },
       "widgets_values": [
-        "wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors",
+        "Wan 2.6_t2v_low_noise_14B_fp8_scaled.safetensors",
         "default"
       ],
       "color": "#223",
@@ -469,7 +469,7 @@
         "Node name for S&R": "UNETLoader"
       },
       "widgets_values": [
-        "wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors",
+        "Wan 2.6_t2v_high_noise_14B_fp8_scaled.safetensors",
         "default"
       ],
       "color": "#223",

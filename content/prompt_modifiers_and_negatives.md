@@ -12,7 +12,7 @@ Negative prompts tell the AI what NOT to generate. In video, negative prompts ar
 ### 1. The Universal "Anti-Slop" Negative (Use for ALL Models)
 > `static frame, slow pacing, blurry details, out of focus, overexposed, oversaturated colors, subtitles, text overlays, visible watermark, painting style, illustration, worst quality, low quality, JPEG artifacts, deformed face, extra fingers, fused limbs, morphing objects, temporal inconsistency, flickering light, duplicate subjects`
 
-### 2. Wan 2.2 / HunyuanVideo Specific (ComfyUI Opensource)
+### 2. Wan 2.6 / HunyuanVideo Specific (ComfyUI Opensource)
 *Open-source models tend to struggle with "melting" backgrounds and extra limbs.*
 > `melting background, background distortion, extra legs, extra arms, fused hands, unnatural physics, floating objects, poorly drawn hands, poorly drawn face, disfigured, malformed limbs, cartoon, anime, 3d render, low resolution, pixelated, noisy, text, watermark, signature`
 
